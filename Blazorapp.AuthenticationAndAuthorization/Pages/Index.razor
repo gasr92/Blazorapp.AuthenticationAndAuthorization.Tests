@@ -1,0 +1,42 @@
+﻿@page "/"
+@inject IJSRuntime js
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+
+<AuthorizeView>
+    <Authorized>
+        <h1>Hi, @context.User.Identity.Name</h1>
+    </Authorized>
+
+    <NotAuthorized>
+        <h1>Not authorized</h1>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+
+<AuthorizeView>
+    <Authorized>
+        <br /><br />
+        <button class="btn btn-outline-primary" @onclick="DisplayGreetingAlert">Display greeting alert</button>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    private async Task DisplayGreetingAlert()
+    {
+        var authState = await authenticationState;
+        var message = $"Hi, {authState.User.Identity.Name}! You are logged in.";
+        await js.InvokeVoidAsync("alert", message);
+    }
+}
